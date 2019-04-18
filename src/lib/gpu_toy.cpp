@@ -5,24 +5,12 @@
 #include "live_reloading_shader.h"
 
 #include <chrono>
-#include <fstream>
 #include <iostream>
 #include <memory>
-#include <streambuf>
 #include <string>
 #include <thread>
 #include <tuple>
 #include <vector>
-
-
-namespace {
-    std::string LoadFile(const std::string& path) {
-        std::ifstream inputFileStream(path);
-        return std::string{ std::istreambuf_iterator<char>(inputFileStream),
-            std::istreambuf_iterator<char>() };
-    }
-}
-
 
 using namespace std::chrono_literals;
 
