@@ -9,12 +9,12 @@
 
 class LambdaListener : public FW::FileWatchListener {
 public:
-    LambdaListener(std::function<void()>& func);
+    LambdaListener(std::function<void()> func);
     ~LambdaListener() override;
     void handleFileAction(FW::WatchID, const FW::String&, const FW::String&, FW::Action) override;
 
 private:
-    const std::function<void()> _func;
+    std::function<void()> _func;
 };
 
 class SimpleFileWatcher {

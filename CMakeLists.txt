@@ -19,10 +19,6 @@ add_executable(gpu_toy
     src/main/live_reloading_shader.h
 )
 
-#target_include_directories(simplefilewatcher PRIVATE
-#    src/main/
-#)
-
 target_link_libraries(gpu_toy PRIVATE
     sfml-graphics
     sfml-system
@@ -30,20 +26,23 @@ target_link_libraries(gpu_toy PRIVATE
     simplefilewatcher
 )
 
+if (UNIX)
+    target_link_libraries(gpu_toy PRIVATE stdc++fs)
+endif()
 
 configure_file(GTestCMakeLists.txt googletest-download/CMakeLists.txt)
 
 execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
-  RESULT_VARIABLE result
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/googletest-download )
+    RESULT_VARIABLE result
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/googletest-download )
 if(result)
-  message(FATAL_ERROR "CMake step for googletest failed: ${result}")
+    message(FATAL_ERROR "CMake step for googletest failed: ${result}")
 endif()
 execute_process(COMMAND ${CMAKE_COMMAND} --build .
-  RESULT_VARIABLE result
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/googletest-download )
+    RESULT_VARIABLE result
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/googletest-download )
 if(result)
-  message(FATAL_ERROR "Build step for googletest failed: ${result}")
+    message(FATAL_ERROR "Build step for googletest failed: ${result}")
 endif()
 
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)

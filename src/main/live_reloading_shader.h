@@ -1,7 +1,6 @@
 #pragma once
 
 #include <string>
-#include <filesystem>
 #include <memory>
 #include "file_watcher.h"
 #include <vector>
@@ -9,9 +8,11 @@
 
 namespace sf { class RenderWindow; }
 
-#if !_HAS_CXX17
+#if !_HAS_CXX17 || !defined(_WIN32)
+#include <experimental/filesystem>
 namespace fs = std::experimental::filesystem;
 #else
+#include <filesystem>
 namespace fs = std::filesystem;
 #endif
 

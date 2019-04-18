@@ -1,12 +1,14 @@
 #pragma once
-
+#if defined(_WIN32)
 #include <windows.h>
+#endif
 #include <string>
 #include <fstream>
 #include <streambuf>
 
 namespace {
     void ClearCmd() {
+#if defined(_WIN32)
         COORD topLeft = { 0, 0 };
         HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
         CONSOLE_SCREEN_BUFFER_INFO screen;
@@ -21,6 +23,7 @@ namespace {
             screen.dwSize.X * screen.dwSize.Y, topLeft, &written
         );
         SetConsoleCursorPosition(console, topLeft);
+#endif
     }
 
     std::string LoadFile(const std::string& path) {
