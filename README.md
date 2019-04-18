@@ -1,4 +1,4 @@
-tested only on Windows, but should be nearly cross platform? Some weird windows things exist for clearing the cmd window & for include namespaces
+tested only on Windows, but should be nearly cross platform? I've got it building in a docker image (see the Dockerfile) but I haven't actually _used_ it
 
 ```shell
 mkdir build
