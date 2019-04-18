@@ -6,15 +6,9 @@
 #include <vector>
 #include <SFML/Graphics.hpp>
 
-namespace sf { class RenderWindow; }
+#include "filesystem_include.h"
 
-#if !_HAS_CXX17 || !defined(_WIN32)
-#include <experimental/filesystem>
-namespace fs = std::experimental::filesystem;
-#else
-#include <filesystem>
-namespace fs = std::filesystem;
-#endif
+namespace sf { class RenderWindow; }
 
 class LiveReloadingShader {
 public:

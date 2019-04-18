@@ -1,26 +1,32 @@
 #include "gpu_toy.h"
 
 #include "shader_header.h"
+#include "filesystem_include.h"
+#include "live_reloading_shader.h"
 
-#include <string>
-#include <iostream>
-#include <vector>
-#include <memory>
-#include <tuple>
-#include <thread>
 #include <chrono>
+#include <fstream>
+#include <iostream>
+#include <memory>
+#include <streambuf>
+#include <string>
+#include <thread>
+#include <tuple>
+#include <vector>
 
-#if !_HAS_CXX17
-#include <experimental/filesystem>
-namespace fs = std::experimental::filesystem;
-#else
-#include <filesystem>
-namespace fs = std::filesystem;
-#endif
+
+namespace {
+    std::string LoadFile(const std::string& path) {
+        std::ifstream inputFileStream(path);
+        return std::string{ std::istreambuf_iterator<char>(inputFileStream),
+            std::istreambuf_iterator<char>() };
+    }
+}
+
 
 using namespace std::chrono_literals;
 
-void _main(std::vector<std::string> args) {
+void gpu_toy_main(std::vector<std::string> args) {
     auto path = fs::path{ args[1] };
     if (path.has_extension())
         path.remove_filename();
@@ -127,15 +133,4 @@ void _main(std::vector<std::string> args) {
             }
         }
     }
-}
-
-int main(int argc, char** argv) {
-    std::vector<std::string> args;
-    for (int i = 0; i < argc; ++i) {
-        args.emplace_back(argv[i]);
-    }
-
-    _main(std::move(args));
-
-    return EXIT_SUCCESS;
 }

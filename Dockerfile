@@ -19,4 +19,4 @@ COPY ./ /src/gpu_toy
 
 WORKDIR /src/gpu_toy/build
 RUN cmake ..
-RUN cmake --build . -- -j 8
+RUN cmake --build . -- -j `cat /proc/cpuinfo | grep processor | wc -l`

@@ -6,14 +6,24 @@
 #include <thread>
 #include "gpu_toy.h"
 #include <chrono>
+#include <streambuf>
+#include <fstream>
+
 
 #include "shader_header.h"
+#include "clear_terminal.h"
 
 using namespace std::chrono_literals;
 
 static auto startT = std::chrono::steady_clock::now();
 
 namespace {
+    std::string LoadFile(const std::string& path) {
+        std::ifstream inputFileStream(path);
+        return std::string{ std::istreambuf_iterator<char>(inputFileStream),
+            std::istreambuf_iterator<char>() };
+    }
+
     std::string SanatizeTextureName(const std::string& stem) {
         std::string ret;
         for (const auto& c : stem) {
@@ -90,7 +100,7 @@ void LiveReloadingShader::UpdateShader() {
         if (!success) {
             std::cerr << "FAILED TO LOAD SHADER: " << shaderPath.stem().generic_string() << std::endl;
             std::this_thread::sleep_for(1000ms);
-            ClearCmd();
+            ClearTerminal();
         }
     } while (!success);
     shader.setUniform("iResolution", sf::Glsl::Vec2(size));
