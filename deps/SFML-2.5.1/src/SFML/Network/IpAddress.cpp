@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
 #include <SFML/Network/IpAddress.hpp>
 #include <SFML/Network/Http.hpp>
 #include <SFML/Network/SocketImpl.hpp>
