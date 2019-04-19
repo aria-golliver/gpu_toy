@@ -12,12 +12,12 @@ TEST(FileWatcher, LambdaListener) {
     auto func = [&]{worked=true;};
     auto listener = LambdaListener(func);
     listener.handleFileAction(0,"","",FW::Action::Add);
-    EXPECT_TRUE(worked);
+    ASSERT_TRUE(worked);
 }
 
 TEST(FileWatcher, DetectsNoFileChanges) {
     auto watcher = SimpleFileWatcher{"."};
-    EXPECT_FALSE(watcher.CheckChanged());
+    ASSERT_FALSE(watcher.CheckChanged());
 }
 
 TEST(FileWatcher, DetectsFileCreated) {
@@ -29,7 +29,7 @@ TEST(FileWatcher, DetectsFileCreated) {
     file.open(temp_file);
     file.close();
     
-    EXPECT_TRUE(watcher.CheckChanged());
+    ASSERT_TRUE(watcher.CheckChanged());
     std::remove(temp_file.c_str());
 }
 
@@ -42,9 +42,9 @@ TEST(FileWatcher, DetectsFileDeleted) {
     file.close();
 
     auto watcher = SimpleFileWatcher{(temp_path).string()};
-    EXPECT_FALSE(watcher.CheckChanged());
+    ASSERT_FALSE(watcher.CheckChanged());
     std::remove(temp_file.c_str());
-    EXPECT_TRUE(watcher.CheckChanged());
+    ASSERT_TRUE(watcher.CheckChanged());
 }
 
 TEST(FileWatcher, DetectsFileChanged) {
@@ -57,13 +57,13 @@ TEST(FileWatcher, DetectsFileChanged) {
     }
 
     auto watcher = SimpleFileWatcher{(temp_path).string()};
-    EXPECT_FALSE(watcher.CheckChanged());
+    ASSERT_FALSE(watcher.CheckChanged());
     {
         std::ofstream file;
         file.open(temp_file);
         file << "\n";
         file.close();
     }
-    EXPECT_TRUE(watcher.CheckChanged());
+    ASSERT_TRUE(watcher.CheckChanged());
     std::remove(temp_file.c_str());
 }

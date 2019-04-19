@@ -13,6 +13,7 @@ add_library(gpu_toy_lib
     src/lib/gpu_toy.cpp
     src/lib/live_reloading_shader.cpp
     src/lib/clear_terminal.cpp
+    src/lib/scope.cpp
 
     src/public/file_watcher.h
     src/public/filesystem_include.h
@@ -48,6 +49,7 @@ add_subdirectory(deps/googletest-1.8.1 EXCLUDE_FROM_ALL)
 
 add_executable(gpu_toy_test
     src/test/file_watcher_test.cpp
+    src/test/scope_test.cpp
 )
 target_link_libraries(gpu_toy_test gtest_main gpu_toy_lib)
 enable_testing()
