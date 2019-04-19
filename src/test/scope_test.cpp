@@ -1,7 +1,6 @@
 #include "scope.h"
 #include "gtest/gtest.h"
 
-
 TEST(Scope, ScopeOnlyFiresOnceWhenOutOfScope) {
     int timesFired = 0;
     {
@@ -70,4 +69,18 @@ TEST(Scope, CanCorrectlyCtorCopyScopes) {
 		ASSERT_EQ(timesFiredA, 1);
 	}
 	ASSERT_EQ(timesFiredA, 2);
+}
+
+TEST(Scope, CanSwapScopes) {
+	int timesFiredA = 0;
+	int timesFiredB = 0;
+	{
+		Scope scopeA = Scope([&] {++timesFiredA; });
+		Scope scopeB = Scope([&] {++timesFiredB; });
+		std::swap(scopeA, scopeB);
+		ASSERT_EQ(timesFiredA, 0);
+		ASSERT_EQ(timesFiredB, 0);
+	}
+	ASSERT_EQ(timesFiredA, 1);
+	ASSERT_EQ(timesFiredB, 1);
 }
