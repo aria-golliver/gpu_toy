@@ -32,6 +32,13 @@ RUN cmake -GNinja ..
 RUN cmake --build .
 RUN ./gpu_toy_test
 
+WORKDIR /gpu_toy/build_gcc_release
+ENV CC=gcc
+ENV CXX=g++
+RUN cmake -GNinja -DCMAKE_BUILD_TYPE=Release .. 
+RUN cmake --build .
+RUN ./gpu_toy_test
+
 WORKDIR /gpu_toy/build_clang
 ENV CC=clang
 ENV CXX=clang++
@@ -56,5 +63,14 @@ ENV CXX=clang++
 ENV CXX_FLAGS=-fsanitize=thread
 ENV C_FLAGS=${CXX_FLAGS}
 RUN cmake -GNinja ..
+RUN cmake --build .
+RUN ./gpu_toy_test
+
+WORKDIR /gpu_toy/build_clang_release
+ENV CC=clang
+ENV CXX=clang++
+ENV CXX_FLAGS=
+ENV C_FLAGS=${CXX_FLAGS}
+RUN cmake -GNinja -DCMAKE_BUILD_TYPE=Release .. 
 RUN cmake --build .
 RUN ./gpu_toy_test
