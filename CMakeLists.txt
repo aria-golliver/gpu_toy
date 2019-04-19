@@ -23,7 +23,7 @@ add_library(gpu_toy_lib
     src/public/clear_terminal.h
 )
 
-target_link_libraries(gpu_toy_lib PRIVATE
+target_link_libraries(gpu_toy_lib PUBLIC
     sfml-graphics
     sfml-system
     sfml-window
@@ -46,7 +46,9 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
 add_subdirectory(deps/googletest-1.8.1 EXCLUDE_FROM_ALL)
 
-add_executable(gpu_toy_test src/test/test.cpp)
+add_executable(gpu_toy_test
+    src/test/file_watcher_test.cpp
+)
 target_link_libraries(gpu_toy_test gtest_main gpu_toy_lib)
 enable_testing()
 add_test(NAME    gpu_toy_test
