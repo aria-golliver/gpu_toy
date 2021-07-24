@@ -191,24 +191,17 @@ vec4 do_everything(in vec3 e,
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
-    float bandIntensity0 = .1;
-    float bandIntensity1 = .1;
-    float bandIntensity2 = .1;
-    float bandIntensity3 = .1;
-
     // ray generation
     float rad = 2.;
     float e_x = rad * sin(iTime / cam_slow);
     float e_y = rad * cos(iTime / cam_slow);
     float e_z = 0.;
 
-    float SS = 1.;
-    
-    float l = -iResolution.x * SS;
-    float r =  iResolution.x * SS;
-    float t =  iResolution.y * SS;
-    float b = -iResolution.y * SS;
-    float d =  iResolution.y * SS;
+    float l = -iResolution.x;
+    float r =  iResolution.x;
+    float t =  iResolution.y;
+    float b = -iResolution.y;
+    float d =  iResolution.y;
 
     vec3 e = vec3(e_x, e_y, e_z);
     vec3 lookpoint = vec3(0.,0.,0.);
@@ -226,10 +219,8 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     quaternion c;
     c.d.x = (iMouse.x > 0. ? iMouse.x / iResolution.x * 2. - 1. : -1.0);
     c.d.z = (iMouse.x > 0. ? iMouse.y / iResolution.y * 2. - 1. :  0.0);
-    c.d.y = bandIntensity2/1.5;
-    c.d.w = bandIntensity3/1.5;
-    
-    TOTAL_COLOR += do_everything(e, w, u, v, c, l, r, t, b, d, 0., 0., fragCoord);
+    c.d.y = 0;
+    c.d.w = 0;
 
-    fragColor = TOTAL_COLOR / vec4(SS*SS);
+    fragColor = do_everything(e, w, u, v, c, l, r, t, b, d, 0., 0., fragCoord);
 }
