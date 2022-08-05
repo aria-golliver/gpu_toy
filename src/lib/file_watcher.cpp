@@ -16,7 +16,7 @@ SimpleFileWatcher::SimpleFileWatcher(const std::string& path)
 SimpleFileWatcher::~SimpleFileWatcher() = default;
 
 bool SimpleFileWatcher::CheckChanged() {
-    Scope([&]() { changed = false; });
+    Scope _([&]() { changed = false; });
     fileWatcher.update();
     return changed;
 }

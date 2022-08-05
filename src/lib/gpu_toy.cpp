@@ -14,11 +14,28 @@
 
 using namespace std::chrono_literals;
 
-void gpu_toy_main(std::vector<std::string> args) {
-    auto path = fs::path{ args[1] };
+std::string get_watch_folder(std::vector<std::string>& args) {
+
+    fs::path path;
+    if (args.size() > 1) {
+        path = fs::path{ args[1] };
+    }
+    else {
+        std::cout << "Please enter the folder you wish to monitor:" << std::endl;
+        std::string in;
+        std::getline(std::cin, in);
+        path = { in };
+    }
     if (path.has_extension())
         path.remove_filename();
-    const auto& projectDirectory = path.generic_string();
+
+    return path.generic_string();
+}
+
+void gpu_toy_main(std::vector<std::string> args) {
+    auto projectDirectory = get_watch_folder(args);
+
+    std::cout << "watching: " << projectDirectory << std::endl;
 
     std::vector<std::pair<fs::path, std::unique_ptr<LiveReloadingShader>>> shaders;
     for (const auto & shaderFile : fs::directory_iterator(projectDirectory)) {

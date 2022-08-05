@@ -6,23 +6,34 @@
 
 
 namespace {
-    std::string shaderHeader = "#version 450\n\
-\n\
-uniform vec2      iResolution;           // viewport resolution (in pixels)\n\
-uniform float     iTime;                 // shader playback time (in seconds)\n\
-uniform float     iTimeDelta;            // render time (in seconds)\n\
-//uniform int       iFrame;                // shader playback frame\n\
-//uniform float     iChannelTime[4];       // channel playback time (in seconds)\n\
-//uniform vec3      iChannelResolution[4]; // channel resolution (in pixels)\n\
-uniform vec2      iMouse;                // mouse pixel coords. xy: current (if MLB down), zw: click\n\
-//uniform vec4      iDate;                 // (year, month, day, time in seconds)\n\
-//uniform float     iSampleRate;           // sound sample rate (i.e., 44100)\n\
-\n\
-void mainImage(out vec4 fragColor, in vec2 fragCoord);\n\
-void main() {\n\
-    mainImage(gl_FragColor, gl_FragCoord.xy);\n\
-}\n\
-";
+    std::string shaderHeader = R"(\
+#version 410
+
+uniform vec2      iResolution;           // viewport resolution (in pixels)
+uniform float     iTime;                 // shader playback time (in seconds)
+uniform float     iTimeDelta;            // render time (in seconds)
+//uniform int       iFrame;                // shader playback frame
+//uniform float     iChannelTime[4];       // channel playback time (in seconds)
+//uniform vec3      iChannelResolution[4]; // channel resolution (in pixels)
+uniform vec2      iMouse;                // mouse pixel coords. xy: current (if MLB down), zw: click
+//uniform vec4      iDate;                 // (year, month, day, time in seconds)
+//uniform float     iSampleRate;           // sound sample rate (i.e., 44100)
+
+void mainImage(out vec4 fragColor, in vec2 fragCoord);
+void main() {
+    mainImage(gl_FragColor, gl_FragCoord.xy);
+}
+
+vec2 _norm_pixel(vec2 fragCoord) {
+    return fragCoord / iResolution;
+}
+#define norm_pixel _norm_pixel(fragCoord)
+
+vec2 _norm_mouse() {
+    return iMouse / iResolution * vec2(1, -1) + vec2(0, 1);
+}
+#define norm_mouse _norm_mouse()
+)";
     std::string headerEnd = "//#####$$$$$ END HEADER $$$$$#####//\n";
 
 }
