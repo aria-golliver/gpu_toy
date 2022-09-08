@@ -1,4 +1,6 @@
 
+// https://www.youtube.com/watch?v=il_Qg9AqQkE
+
 vec2 N(float angle) {
     return vec2(sin(angle), cos(angle));
 }
