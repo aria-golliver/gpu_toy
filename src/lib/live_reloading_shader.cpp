@@ -163,9 +163,6 @@ void LiveReloadingShader::Tick() {
         if (e.type == sf::Event::GainedFocus) {
             gainedFocus = true;
         }
-        if (e.type == sf::Event::GainedFocus) {
-            gainedFocus = true;
-        }
     }
 }
 
