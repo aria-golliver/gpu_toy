@@ -35,7 +35,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     
     //col += smoothstep(1./iResolution.y, 0., d/scale);
     uv /= scale;
-    col.rgb += texture(texture_quaternion, uv).rgb;
+    col.rgb += texture(texture_transflag, uv).rgb;
 
     fragColor = vec4(col, 1.0);
 }
