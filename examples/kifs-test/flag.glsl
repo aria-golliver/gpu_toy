@@ -18,10 +18,11 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     uv *= 2.;
     vec3 col = vec3(0.);
     float a = atan2(uv.y, uv.x);
-    float spin = iTime;
+    float spin = iTime * .1;
 
-    col += smoothstep(0., 3./3., abs(sin(a*4 + spin))) * BLUE;
-    col += smoothstep(0., 3./3., abs(sin(a*8+PI/2 + spin * 2))) * PINK;
+    col += smoothstep(0., 3./3., abs(sin((a + spin)*4))) * PINK;
+    col += smoothstep(0., 3./3., abs(sin((a + spin)*8+PI/2))) * BLUE;
+    col /= max(max(col.x, col.y), col.z);
 
     fragColor.rgb = col;
 }
