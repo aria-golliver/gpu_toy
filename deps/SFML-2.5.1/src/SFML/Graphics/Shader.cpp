@@ -852,6 +852,10 @@ static void printCompileErrorLog(std::string type, std::string log, std::string 
             auto linePos = atoi(m[0].str().c_str());
             if(linePos != 0 && linePos < sourceLines.size())
                 err() << sourceLines[linePos - 1] << std::endl;
+            else {
+                for (const auto& line : sourceLines)
+                    err() << line << std::endl;
+            }
             err() << std::endl;
         }
     }
