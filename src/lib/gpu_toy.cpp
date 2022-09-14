@@ -32,23 +32,67 @@ std::string get_watch_folder(std::vector<std::string>& args) {
     return path.generic_string();
 }
 
+void reInit(std::vector<std::pair<fs::path, std::unique_ptr<LiveReloadingShader>>>& shaders, const std::string& projectDirectory) {
+    bool reInitialized;
+    do {
+        reInitialized = true;
+        std::vector<fs::path> currentFileset;
+        for (const auto& shaderFile : fs::directory_iterator(projectDirectory)) {
+            if (shaderFile.path().has_extension() && shaderFile.path().extension() == ".glsl")
+                currentFileset.emplace_back(shaderFile.path());
+        }
+
+        if (currentFileset.size() != shaders.size()) {
+            std::cout << "added or removed shaders, new size: " << currentFileset.size() << " old size: shaders.size()" << std::endl;
+        }
+
+        // see if any of the currently loaded shaders are no longer in the folder
+        // and remove them
+        for (auto shaderItr = shaders.begin(); shaderItr != shaders.end(); ) {
+            bool found = false;
+            for (const auto& currentFile : currentFileset) {
+                if (currentFile.generic_string() == shaderItr->first.generic_string())
+                    found = true;
+            }
+            if (!found)
+                shaderItr = shaders.erase(shaderItr);
+            else
+                ++shaderItr;
+        }
+
+        // see if any of the current files are not loaded as shaders, and add them
+        for (const auto& currentFile : currentFileset) {
+            bool found = false;
+            for (const auto& currentShader : shaders) {
+
+                if (currentFile.generic_string() == currentShader.first.generic_string())
+                    found = true;
+            }
+            if (!found)
+                shaders.emplace_back(std::make_pair(currentFile, std::make_unique<LiveReloadingShader>(currentFile, shaders)));
+        }
+
+        for (const auto& shader : shaders) {
+            shader.second->UpdatePreviousFrame();
+        }
+
+        for (const auto& shader : shaders) {
+            if (!shader.second->UpdateShader()) {
+                reInitialized = false;
+                break;
+            }
+        }
+    } while (!reInitialized);
+}
+
 void gpu_toy_main(std::vector<std::string> args) {
     auto projectDirectory = get_watch_folder(args);
 
     std::cout << "watching: " << projectDirectory << std::endl;
 
     std::vector<std::pair<fs::path, std::unique_ptr<LiveReloadingShader>>> shaders;
-    for (const auto & shaderFile : fs::directory_iterator(projectDirectory)) {
-        shaders.emplace_back(std::make_pair(shaderFile.path(), nullptr));
-    }
+    reInit(shaders, projectDirectory);
 
-    for (auto& shader : shaders) {
-        shader.second = std::make_unique<LiveReloadingShader>(shader.first, shaders);
-    }
-
-    for (const auto& shader : shaders) {
-        shader.second->UpdateShader();
-    }
 
     SimpleFileWatcher fw(projectDirectory);
     int i = 0;
@@ -72,51 +116,7 @@ void gpu_toy_main(std::vector<std::string> args) {
         }
 
         if (fw.CheckChanged()) {
-            {
-                std::vector<fs::path> currentFileset;
-                for (const auto & shaderFile : fs::directory_iterator(projectDirectory)) {
-                    if(shaderFile.path().has_extension() && shaderFile.path().extension() == ".glsl")
-                        currentFileset.emplace_back(shaderFile.path());
-                }
-
-                if (currentFileset.size() != shaders.size()) {
-                    std::cout << "added or removed shaders, new size: " << currentFileset.size() << " old size: shaders.size()" << std::endl;
-                }
-
-                // see if any of the currently loaded shaders are no longer in the folder
-                // and remove them
-                for (auto shaderItr = shaders.begin(); shaderItr != shaders.end(); ) {
-                    bool found = false;
-                    for (const auto& currentFile : currentFileset) {
-                        if (currentFile.generic_string() == shaderItr->first.generic_string())
-                            found = true;
-                    }
-                    if (!found)
-                        shaderItr = shaders.erase(shaderItr);
-                    else
-                        ++shaderItr;
-                }
-
-                // see if any of the current files are not loaded as shaders, and add them
-                for (const auto& currentFile : currentFileset) {
-                    bool found = false;
-                    for (const auto& currentShader : shaders) {
-
-                        if (currentFile.generic_string() == currentShader.first.generic_string())
-                            found = true;
-                    }
-                    if (!found)
-                        shaders.emplace_back(std::make_pair(currentFile, std::make_unique<LiveReloadingShader>(currentFile, shaders)));
-                }
-            }
-
-            for (const auto& shader : shaders) {
-                shader.second->UpdatePreviousFrame();
-            }
-
-            for (const auto& shader : shaders) {
-                shader.second->UpdateShader();
-            }
+            reInit(shaders, projectDirectory);
         }
 
         for (const auto& shader : shaders) {

@@ -92,20 +92,19 @@ void LiveReloadingShader::UpdatePreviousFrame() {
     previousFrame.display();
 }
 
-void LiveReloadingShader::UpdateShader() {
-    bool success = false;
-    do {
-        textureHeaders = GetTextureNames(shaders);
-        success = shader.loadFromMemory(shaderHeader + textureHeaders + headerEnd + LoadFile(shaderPath.generic_string()), sf::Shader::Type::Fragment);
-        if (!success) {
-            std::cerr << "FAILED TO LOAD SHADER: " << shaderPath.stem().generic_string() << std::endl;
-            std::this_thread::sleep_for(1000ms);
-            ClearTerminal();
-        }
-    } while (!success);
+bool LiveReloadingShader::UpdateShader() {
+    textureHeaders = GetTextureNames(shaders);
+    if (!shader.loadFromMemory(shaderHeader + textureHeaders + headerEnd + LoadFile(shaderPath.generic_string()), sf::Shader::Type::Fragment)) {
+        std::cerr << "FAILED TO LOAD SHADER: " << shaderPath.stem().generic_string() << std::endl;
+        std::this_thread::sleep_for(1000ms);
+        ClearTerminal();
+        return false;
+    }
     shader.setUniform("iResolution", sf::Glsl::Vec2(size));
     shader.setUniform("iMouse", sf::Glsl::Vec2(mousePos.x * size.x, mousePos.y * size.y));
     std::cout << "LOADED: " << shaderPath.stem().generic_string() << std::endl;
+
+    return true;
 }
 
 void LiveReloadingShader::Tick() {
