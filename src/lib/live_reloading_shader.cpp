@@ -154,7 +154,7 @@ void LiveReloadingShader::Tick() {
             mouseEnabled = false;
         if (e.type == sf::Event::MouseMoved) {
             if (mouseEnabled) {
-                mousePos = { e.mouseMove.x * 1.f / window->getSize().x, e.mouseMove.y *  1.f / window->getSize().y };
+                mousePos = { e.mouseMove.x * 1.f / window->getSize().x, 1.f - e.mouseMove.y * 1.f / window->getSize().y };
                 auto size = window->getSize();
                 shader.setUniform("iMouse", sf::Glsl::Vec2(mousePos.x * size.x, mousePos.y * size.y));
             }
