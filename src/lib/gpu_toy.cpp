@@ -32,7 +32,7 @@ std::string get_watch_folder(std::vector<std::string>& args) {
     return path.generic_string();
 }
 
-void reInit(std::vector<std::pair<fs::path, std::unique_ptr<LiveReloadingShader>>>& shaders, const std::string& projectDirectory) {
+void re_init_shaders(std::vector<std::pair<fs::path, std::unique_ptr<LiveReloadingShader>>>& shaders, const std::string& projectDirectory) {
     bool reInitialized;
     do {
         reInitialized = true;
@@ -91,7 +91,7 @@ void gpu_toy_main(std::vector<std::string> args) {
     std::cout << "watching: " << projectDirectory << std::endl;
 
     std::vector<std::pair<fs::path, std::unique_ptr<LiveReloadingShader>>> shaders;
-    reInit(shaders, projectDirectory);
+    re_init_shaders(shaders, projectDirectory);
 
 
     SimpleFileWatcher fw(projectDirectory);
@@ -116,7 +116,7 @@ void gpu_toy_main(std::vector<std::string> args) {
         }
 
         if (fw.CheckChanged()) {
-            reInit(shaders, projectDirectory);
+            re_init_shaders(shaders, projectDirectory);
         }
 
         for (const auto& shader : shaders) {
